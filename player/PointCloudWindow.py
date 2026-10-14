@@ -17,7 +17,7 @@ class PointCloudWindow(QMainWindow):
     def __init__(self, controller, point_size=2.0):
         super().__init__()
         self.controller = controller
-        self.setWindowTitle("KITTI | 3D LiDAR")
+        self.setWindowTitle("3D Perception Lab | 3D LiDAR")
         self.resize(1100, 760)
         self.setMinimumSize(640, 420)
         self._build_ui(point_size)

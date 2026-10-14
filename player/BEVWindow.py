@@ -6,7 +6,7 @@ from .PlayerWindow import PlayerWindow
 class BEVWindow(PlayerWindow):
     def __init__(self, controller, renderer):
         super().__init__(
-            controller, "KITTI | BEV", close_controller=False,
+            controller, "3D Perception Lab | BEV", close_controller=False,
             image_signal=controller.bev_ready, autoload=False,
         )
         self.resize(850, 920)

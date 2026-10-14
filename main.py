@@ -31,7 +31,7 @@ BEV_RESOLUTION = 0.1  # 公尺／像素。
 
 def main():
     app = QApplication(sys.argv)
-    app.setApplicationName("KITTI LiDAR Player")
+    app.setApplicationName("3D Perception Lab")
     selection = ViewerSelectionDialog()
     if selection.exec() != QDialog.DialogCode.Accepted:
         return 0
@@ -58,7 +58,7 @@ def main():
     windows = []  # 保留 Python 參考，避免視窗在 event loop 中被回收。
     if "camera" in selected:
         windows.append(PlayerWindow(
-            controller, f"KITTI | 2D | {SPLIT.value}",
+            controller, f"3D Perception Lab | 2D | {SPLIT.value}",
             close_controller=False, autoload=False,
         ))
     if "cloud" in selected:

@@ -7,7 +7,7 @@ from PySide6.QtWidgets import QCheckBox, QDialog, QDialogButtonBox, QVBoxLayout
 class ViewerSelectionDialog(QDialog):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("KITTI | Select Viewers")
+        self.setWindowTitle("3D Perception Lab | Select Viewers")
         self.setMinimumWidth(300)
         self.resize(340, 180)
         layout = QVBoxLayout(self)

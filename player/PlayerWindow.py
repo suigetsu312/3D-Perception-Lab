@@ -13,7 +13,7 @@ from .SequenceSelector import SequenceSelector
 class PlayerWindow(QMainWindow):
     seek_requested = Signal(int)
 
-    def __init__(self, controller, title="KITTI LiDAR Player", close_controller=True, image_signal=None, autoload=True):
+    def __init__(self, controller, title="3D Perception Lab | 2D", close_controller=True, image_signal=None, autoload=True):
         super().__init__()
         self.controller = controller
         self.close_controller = close_controller
