@@ -27,7 +27,7 @@
 - 藍色 +Z：上方。
 - 單位是公尺，座標軸長 5 公尺，格線間隔 5 公尺。
 
-格線位於 $z=0$，也就是感測器高度的水平參考面，**不是路面**。
+格線位於 $`z=0`$，也就是感測器高度的水平參考面，**不是路面**。
 每一幀的原點代表當時的 LiDAR 位置，不是固定的全球原點。
 目前沒有使用 OXTS 位姿補償，所以播放時車子附近的環境會移動。
 
@@ -39,12 +39,12 @@ $$
 \mathbf p_{\mathrm{clip}} = \mathbf P\mathbf V\mathbf M\mathbf p_{\mathrm{lidar}}
 $$
 
-1. Model（$\mathbf M$）：目前原始 LiDAR 座標就是渲染世界座標，$\mathbf M=\mathbf I_4$。
-2. View（$\mathbf V$）：滑鼠旋轉、平移改變虛擬相機相對於點雲的位置與方向。
-3. Projection（$\mathbf P$）：虛擬相機把 3D 點變成裁切座標，GPU 再除以 $w$。
+1. Model（$`\mathbf M`$）：目前原始 LiDAR 座標就是渲染世界座標，$`\mathbf M=\mathbf I_4`$。
+2. View（$`\mathbf V`$）：滑鼠旋轉、平移改變虛擬相機相對於點雲的位置與方向。
+3. Projection（$`\mathbf P`$）：虛擬相機把 3D 點變成裁切座標，GPU 再除以 $`w`$。
 4. 深度測試：同個像素的近點可以遮住遠點。點雲是離散點，空隙仍存在。
 
-這個 $\mathbf P$ 是虛擬相機投影，不是 KITTI 的 $\mathbf P_2$。$\mathbf P_2$ 用於把 LiDAR 投到
+這個 $`\mathbf P`$ 是虛擬相機投影，不是 KITTI 的 $`\mathbf P_2`$。$`\mathbf P_2`$ 用於把 LiDAR 投到
 實體相機圖片；3D 視窗可以從任意角度看，因此不使用它限制視野。
 每幀更新點的位置與顏色，不重設相機，所以旋轉後仍能繼續播放。
 
