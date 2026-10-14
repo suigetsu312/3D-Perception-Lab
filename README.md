@@ -1,5 +1,6 @@
-# KITTI LiDAR Player
+# 3D Perception Lab
 
+用於探索 3D 感知、點雲幾何與相關研究議題，目前以 KITTI Tracking 為資料來源。
 支援相機 LiDAR 疊圖、可旋轉平移的 3D 點雲，以及高度上色的 BEV 鳥瞰圖。
 啟動時勾選想開的 viewer，可單開或任意組合，所選視窗同步播放。
 今天的理論與公式整理在 [視覺化理論](docs/visualization-theory.md)，
