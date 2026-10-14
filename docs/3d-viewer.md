@@ -35,9 +35,9 @@
 
 3D 螢幕同樣需要投影：
 
-$$
+```math
 \mathbf p_{\mathrm{clip}} = \mathbf P\mathbf V\mathbf M\mathbf p_{\mathrm{lidar}}
-$$
+```
 
 1. Model（$`\mathbf M`$）：目前原始 LiDAR 座標就是渲染世界座標，$`\mathbf M=\mathbf I_4`$。
 2. View（$`\mathbf V`$）：滑鼠旋轉、平移改變虛擬相機相對於點雲的位置與方向。

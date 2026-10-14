@@ -21,19 +21,19 @@ LiDAR 軸向為 +X 前方、+Y 左方、+Z 上方，單位公尺。
 
 旋轉與平移原本是 $`\mathbf p' = \mathbf R\mathbf p + \mathbf t`$。補上齊次座標後可合成一次乘法：
 
-$$
+```math
 \mathbf T =
 \begin{bmatrix}
 \mathbf R_{3\times3} & \mathbf t_{3\times1} \\
 \mathbf 0_{1\times3} & 1
 \end{bmatrix}
-$$
+```
 
-$$
+```math
 \begin{bmatrix} x' \\ y' \\ z' \\ 1 \end{bmatrix}
 = \mathbf T
 \begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix}
-$$
+```
 
 平移不影響方向向量，所以方向向量的第四項是 0，位置點則是 1。
 這兩種不能混用。對應實作為 `geometry.to_homogeneous` 與 `transform_points`。
@@ -51,33 +51,33 @@ $$
 
 先將 `R_rect` 與 `Tr_velo_cam` 擴成 $`4\times4`$，再計算：
 
-$$
+```math
 \mathbf q = \mathbf P_2\mathbf R_{\mathrm{rect}}\mathbf T_{\mathrm{velo}\to\mathrm{cam}}
 \begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix},
 \qquad
 u = \frac{q_x}{q_z},\quad v = \frac{q_y}{q_z}
-$$
+```
 
 這裡 $`\mathbf q`$ 不是已經可以畫的像素，必須做透視除法。
 簡化成針孔模型時：
 
-$$
+```math
 u = f_x\frac{X}{Z} + c_x,\qquad
 v = f_y\frac{Y}{Z} + c_y
-$$
+```
 
 除以深度 $`Z`$ 造成近大遠小。相機後方、無效數值與影像外的點要排除。
 
 $`\mathbf P_2`$ 的左側 $`3\times3`$ 是校正後內參 $`\mathbf K`$。序列 0000 的數值為：
 
-$$
+```math
 \mathbf K =
 \begin{bmatrix}
 721.5377 & 0 & 609.5593 \\
 0 & 721.5377 & 172.8540 \\
 0 & 0 & 1
 \end{bmatrix}
-$$
+```
 
 $`f_x`$、$`f_y`$ 是像素單位的焦距，$`c_x`$、$`c_y`$ 是主點。但 $`\mathbf P_2`$ 的第四欄並不為零，
 還包含彩色相機相對校正參考座標的平移效果，所以投影不能只用 $`\mathbf K`$。
@@ -91,13 +91,13 @@ $`f_x`$、$`f_y`$ 是像素單位的焦距，$`c_x`$、$`c_y`$ 是主點。但 $
 
 3D 螢幕最後仍然是 2D 像素，使用的是虛擬相機：
 
-$$
+```math
 \mathbf p_{\mathrm{clip}} = \mathbf P\mathbf V\mathbf M\mathbf p_{\mathrm{local}},
 \qquad
 \mathbf p_{\mathrm{ndc}} =
 \frac{1}{w_{\mathrm{clip}}}
 \begin{bmatrix} x_{\mathrm{clip}} \\ y_{\mathrm{clip}} \\ z_{\mathrm{clip}} \end{bmatrix}
-$$
+```
 
 - Model（$`\mathbf M`$）：物件 → 世界。目前直接用 LiDAR xyz，所以 $`\mathbf M=\mathbf I_4`$。
 - View（$`\mathbf V`$）：世界 → 虛擬相機。旋轉與平移改變觀看方向及中心。
@@ -116,23 +116,23 @@ GPU 的深度測試讓同一像素的近點遮住遠點，但離散點之間仍�
 
 幾何上，BEV 就是忽略 Z、投到 XY 平面：
 
-$$
+```math
 \mathbf B = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \end{bmatrix},
 \qquad
 \begin{bmatrix} x_{\mathrm{bev}} \\ y_{\mathrm{bev}} \end{bmatrix}
 = \mathbf B\begin{bmatrix} x \\ y \\ z \end{bmatrix}
-$$
+```
 
 它是正交投影，不除以深度、不會近大遠小。
 但 XY 還是公尺座標，需要縮放、反轉軸向與平移，才成為圖片像素。
 令 $`r`$ 為公尺／像素，讓前方朝上、左方朝左：
 
-$$
+```math
 u = \frac{y_{\max}-y}{r},\qquad
 v = \frac{x_{\max}-x}{r}
-$$
+```
 
-$$
+```math
 \begin{bmatrix} u \\ v \\ 1 \end{bmatrix}
 = \mathbf A\begin{bmatrix} x \\ y \\ z \\ 1 \end{bmatrix},
 \qquad
@@ -142,7 +142,7 @@ $$
 -\frac{1}{r} & 0 & 0 & \frac{x_{\max}}{r} \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-$$
+```
 
 $`\mathbf A`$ 的 $`Z`$ 欄全部為零，最後一欄負責平移。最後一項固定為 1，沒有透視除法。
 
@@ -156,20 +156,20 @@ $`\mathbf A`$ 的 $`Z`$ 欄全部為零，最後一欄負責平移。最後一�
 
 把連續像素取整數格，再檢查索引是否落在影像內：
 
-$$
+```math
 i=\lfloor u\rfloor,\qquad j=\lfloor v\rfloor
-$$
+```
 
-$$
+```math
 0\le i<W,\qquad 0\le j<H
-$$
+```
 
 其中 $`W`$、$`H`$ 是影像寬高。對應的公尺座標範圍為：
 
-$$
+```math
 x_{\min}<x\le x_{\max},\qquad
 y_{\min}<y\le y_{\max}
-$$
+```
 
 也就是包含上界、排除下界，避免最高索引超出圖片。
 
@@ -179,21 +179,21 @@ $$
 目前先篩選 `z_range` 內的點，再對同一格取最高 $`Z`$。
 令 $`\mathcal S_{j,i}`$ 表示通過高度篩選、且落在第 $`j`$ 列、第 $`i`$ 欄的點索引集合：
 
-$$
-\mathcal S_{j,i}=\left\{k\mid
+```math
+\mathcal S_{j,i}=\left\lbrace k\mid
 \lfloor u_k\rfloor=i,\;
 \lfloor v_k\rfloor=j,\;
 z_{\min}\le z_k\le z_{\max}
-\right\}
-$$
+\right\rbrace
+```
 
-$$
+```math
 h_{j,i} =
 \begin{cases}
 \displaystyle\max_{k\in\mathcal S_{j,i}} z_k, & \mathcal S_{j,i}\ne\varnothing, \\
 -\infty, & \mathcal S_{j,i}=\varnothing.
 \end{cases}
-$$
+```
 
 `np.maximum.at` 可處理重複索引，結果不依賴輸入點的順序。
 沒有點的格子用 $`-\infty`$ 表示，不能填 0，因為 0 是真實的感測器高度。
