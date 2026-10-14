@@ -1,0 +1,13 @@
+[project]
+name = "kitti"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pyqtgraph>=0.13.7",
+    "pyopengl>=3.1.7",
+    "pyside6>=6.8",
+    "numpy>=2.0",
+    "opencv-python>=5.0.0.93",
+]
